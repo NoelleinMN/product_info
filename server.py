@@ -1,15 +1,18 @@
 """Server for myRetail RESTful API"""
 
 from flask import Flask
+from pymongo import MongoClient
 import urllib.request
 from urllib.request import urlopen
 import json
-
+from bson.json_util import dumps
 import os
-
 
 app = Flask(__name__)
 
+client = MongoClient('localhost', 27017)
+db = client.products
+product_price = db.product_price
 
 API_KEY = os.environ['REDSKY_KEY']
 
@@ -31,7 +34,12 @@ def get_redsky_info():
 
     return data
 
+@app.route("/products/price")
+def get_price():
+    price = product_price.find_one()
+    price_payload = dumps(price)
+
+    return price_payload
 
 if __name__ == '__main__':
     app.run(debug=True)
-
