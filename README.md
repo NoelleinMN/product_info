@@ -12,7 +12,7 @@ Build a RESTful products API, which will aggregate product data from multiple so
 # Requirements / Features
 
 Users can:
-- Retrieve product and price information by product ID (HTTP GET request at /products/{id} ) devlivered via JSON
+- Retrieve product and price information by product ID (HTTP GET request at /products/{id} ) delivered via JSON
   - product information comes from an external API
   - price information comes from NoSQL data store
 - Update price by product ID within the data store (HTTP PUT request at /products/{id} )
