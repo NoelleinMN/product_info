@@ -1,12 +1,17 @@
 """Server for myRetail RESTful API"""
 
-from flask import Flask
+# from flask import Flask
 from pymongo import MongoClient
-import urllib.request
-from urllib.request import urlopen
+# import urllib.request
+# from urllib.request import urlopen
 import json
-from bson.json_util import dumps
+# from bson.json_util import dumps
 import os
+
+from flask import (Flask, jsonify, render_template, request, flash, session,
+                   redirect)
+import requests
+
 
 app = Flask(__name__)
 
@@ -31,7 +36,10 @@ def get_redsky_info(id):
 
     response = urllib.request.urlopen(url)
     data = response.read()
-
+    id = data["product"]["tcin"]
+    name = data["product"]["item"]["product_description"]["title"]
+    print(id)
+    print(name)
     return data
 
 @app.route("/products/price")
