@@ -5,7 +5,7 @@ from pymongo import MongoClient
 # import urllib.request
 # from urllib.request import urlopen
 import json
-# from bson.json_util import dumps
+from bson.json_util import dumps
 import os
 
 from flask import (Flask, jsonify, render_template, request, flash, session,
@@ -34,13 +34,22 @@ def products_landing():
 def get_redsky_info(id):
     url = "https://redsky-uat.perf.target.com/redsky_aggregations/v1/redsky/case_study_v1?key={}&tcin={}".format(API_KEY, id)
 
-    response = urllib.request.urlopen(url)
-    data = response.read()
-    id = data["product"]["tcin"]
-    name = data["product"]["item"]["product_description"]["title"]
-    print(id)
-    print(name)
-    return data
+    response = requests.get(url)
+    data = response.json()
+    id = int(data['data']['product']['tcin'])
+    name = data['data']['product']['item']['product_description']['title']
+    product = {
+        "id": id,
+        "name": name
+    }
+
+    return json.dumps(product)
+
+
+    # response = urllib.request.urlopen(url)
+    # data = response.read()
+
+    # return data
 
 @app.route("/products/price")
 def get_price():
