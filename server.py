@@ -30,13 +30,13 @@ def welcome():
 def products_landing():
     return "<p>Getting warmer. Why not try a product ID?</p>"
 
-@app.route("/products/<id>")
+@app.route("/products/<int:id>")
 def get_redsky_info(id):
     url = "https://redsky-uat.perf.target.com/redsky_aggregations/v1/redsky/case_study_v1?key={}&tcin={}".format(API_KEY, id)
 
     response = requests.get(url)
     data = response.json()
-    id = int(data['data']['product']['tcin'])
+    id = data['data']['product']['tcin']
     name = data['data']['product']['item']['product_description']['title']
     product = {
         "id": id,
@@ -51,12 +51,12 @@ def get_redsky_info(id):
 
     # return data
 
-@app.route("/products/price")
-def get_price():
-    price = product_price.find_one()
-    price_payload = dumps(price)
+@app.route("/products/price/<int:id>")
+def get_price(id):
 
-    return price_payload
+    price = product_price.find_one({'_id': id})
+
+    return json.dumps(price)
 
 if __name__ == '__main__':
     app.run(debug=True)
