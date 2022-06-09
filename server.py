@@ -19,15 +19,15 @@ API_KEY = os.environ['REDSKY_KEY']
 
 @app.route("/")
 def welcome():
-    return "<h1>Landing page for myRetail RESTful API</h1>"
+    return "<h3>Landing page for myRetail RESTful API</h3>"
 
 @app.route("/products")
 def products_landing():
     return "<p>Getting warmer. Why not try a product ID?</p>"
 
-@app.route("/products/test")
-def get_redsky_info():
-    url = "https://redsky-uat.perf.target.com/redsky_aggregations/v1/redsky/case_study_v1?key={}&tcin=84836363".format(API_KEY)
+@app.route("/products/<id>")
+def get_redsky_info(id):
+    url = "https://redsky-uat.perf.target.com/redsky_aggregations/v1/redsky/case_study_v1?key={}&tcin={}".format(API_KEY, id)
 
     response = urllib.request.urlopen(url)
     data = response.read()
