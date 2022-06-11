@@ -1,7 +1,6 @@
 """Server for myRetail RESTful API"""
 
-from flask import (Flask, jsonify, render_template, request, flash, session,
-                   redirect)
+from flask import (Flask, jsonify, render_template, request, redirect)
 from pymongo import MongoClient
 import json
 # from bson.json_util import dumps
