@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Server for myRetail RESTful API"""
 
 from flask import (Flask, jsonify, render_template, request, redirect)
@@ -11,6 +13,7 @@ import requests
 app = Flask(__name__)
 
 app.config["JSON_SORT_KEYS"] = False
+app.config['JSON_AS_ASCII'] = False
 
 client = MongoClient('localhost', 27017)
 db = client.products
@@ -40,7 +43,8 @@ def get_redsky_info(id):
     response = requests.get(url)
     data = response.json()
     product_id = data['data']['product']['tcin']
-    name = data['data']['product']['item']['product_description']['title']
+    pattern = "#38;"
+    name = data['data']['product']['item']['product_description']['title'].replace(pattern,"")
 
     product = {
         "id": product_id,
