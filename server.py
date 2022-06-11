@@ -10,6 +10,8 @@ import requests
 
 app = Flask(__name__)
 
+app.config["JSON_SORT_KEYS"] = False
+
 client = MongoClient('localhost', 27017)
 db = client.products
 product_price = db.product_price
