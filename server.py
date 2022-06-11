@@ -31,7 +31,7 @@ def products_landing():
 def get_price(id):
     price = product_price.find_one({'_id': id})
 
-    return price
+    return price['current_price']
 
 @app.route("/products/<int:id>")
 def get_redsky_info(id):
