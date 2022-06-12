@@ -9,7 +9,7 @@
   {
     "_id": 13860428,
     "current_price": {
-      "value": 13.49,
+      "value": 7.99,
       "currency_code": "USD"
     }
   },
@@ -21,9 +21,9 @@
     }
   },
   {
-    "_id": 12936306,
+    "_id": 11334663,
     "current_price": {
-      "value": 2.99,
+      "value": 5.25,
       "currency_code": "USD"
     }
   },
