@@ -76,6 +76,15 @@ class FlaskTestsBasic(unittest.TestCase):
         result = self.client.get('/products/13860428', follow_redirects=True)
         self.assertIn(b"current_price", result.data)
 
+    def test_error_response_no_product(self):
+        """Test app error handling with integer"""
+        result = self.client.get('/products/00000000', follow_redirects=True)
+        self.assertIn(b"message", result.data)
+
+    def test_error_response_bad_input(self):
+        """Test app error handling with gibberish"""
+        result = self.client.get('/products/?g@rb@ge?!', follow_redirects=True)
+        self.assertIn(b"message", result.data)
 
 
 # client = MongoClient('localhost', 27017)

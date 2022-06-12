@@ -73,7 +73,8 @@ def get_redsky_info(id):
 
 @app.errorhandler(HTTPException)
 def handle_exception(err):
-    return jsonify({"message": err.description}), err.code
+    print(err)
+    return jsonify({"status_code": err.code, "message": err.description})
 
 
 if __name__ == '__main__':
