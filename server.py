@@ -62,18 +62,21 @@ def get_redsky_info(id):
         product_id = data['data']['product']['tcin']
         pattern = "#38;"
         name = data['data']['product']['item']['product_description']['title'].replace(pattern,"")
+        price_data = get_price(id)
+        value_decimal = price_data['value']
+        limit_float = format(value_decimal, '.2f')
+        price_data['value'] = limit_float
 
         product = {
             "id": product_id,
             "name": name,
-            "current_price": get_price(id)
+            "current_price": price_data
         }
 
         return product
 
 @app.errorhandler(HTTPException)
 def handle_exception(err):
-    print(err)
     return jsonify({"status_code": err.code, "message": err.description})
 
 
