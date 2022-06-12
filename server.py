@@ -42,17 +42,26 @@ def get_redsky_info(id):
 
     response = requests.get(url)
     data = response.json()
-    product_id = data['data']['product']['tcin']
-    pattern = "#38;"
-    name = data['data']['product']['item']['product_description']['title'].replace(pattern,"")
 
-    product = {
-        "id": product_id,
-        "name": name,
-        "current_price": get_price(id)
-    }
+    try:
+        product_id = data['data']['product']['tcin']
+    except KeyError:
+        print('Product does not exist')
+        return "<p>&#123;&#34;errors&#34;:&#34;No product with id {}&#34;&#125;</p>".format(id)
 
-    return product
+    else:
+
+        product_id = data['data']['product']['tcin']
+        pattern = "#38;"
+        name = data['data']['product']['item']['product_description']['title'].replace(pattern,"")
+
+        product = {
+            "id": product_id,
+            "name": name,
+            "current_price": get_price(id)
+        }
+
+        return product
 
 
 if __name__ == '__main__':
