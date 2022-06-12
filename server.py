@@ -2,7 +2,7 @@
 
 """Server for myRetail RESTful API"""
 
-from flask import (Flask, jsonify, render_template, request, redirect)
+from flask import (Flask, jsonify, abort, make_response, render_template, request, redirect)
 from pymongo import MongoClient
 import json
 # from bson.json_util import dumps
@@ -47,7 +47,9 @@ def get_redsky_info(id):
         product_id = data['data']['product']['tcin']
     except KeyError:
         print('Product does not exist')
-        return "<p>&#123;&#34;errors&#34;:&#34;No product with id {}&#34;&#125;</p>".format(id)
+        json = jsonify(message=("No product found with tcin {}".format(id)))
+        response = make_response(json, 400)
+        abort(response)
 
     else:
 
