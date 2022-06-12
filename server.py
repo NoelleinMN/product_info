@@ -34,7 +34,13 @@ def products_landing():
 def get_price(id):
     price = product_price.find_one({'_id': id})
 
-    return price['current_price']
+    if price is not None:
+        return price['current_price']
+
+    else:
+        json = jsonify(message=("Price information for {} is not available".format(id)))
+        response = make_response(json, 400)
+        abort(response)
 
 @app.route("/products/<int:id>")
 def get_redsky_info(id):
@@ -46,7 +52,6 @@ def get_redsky_info(id):
     try:
         product_id = data['data']['product']['tcin']
     except KeyError:
-        print('Product does not exist')
         json = jsonify(message=("No product found with tcin {}".format(id)))
         response = make_response(json, 400)
         abort(response)
