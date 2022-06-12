@@ -2,13 +2,12 @@
 
 """Server for myRetail RESTful API"""
 
-from flask import (Flask, jsonify, abort, make_response, render_template, request, redirect)
+from flask import (Flask, jsonify, abort, make_response, request)
 from werkzeug.exceptions import HTTPException
 from pymongo import MongoClient
-import json
-# from bson.json_util import dumps
-import os
 import requests
+import json
+import os
 
 
 app = Flask(__name__)
@@ -33,6 +32,8 @@ def products_landing():
 
 @app.route("/products/<int:id>", methods=["GET"])
 def get_redsky_info(id):
+    """Get info from API, parse, retrieve data from collection, compile into JSON output"""
+
     url = "https://redsky-uat.perf.target.com/redsky_aggregations/v1/redsky/case_study_v1?key={}&tcin={}".format(API_KEY, id)
 
     response = requests.get(url)
@@ -61,6 +62,7 @@ def get_redsky_info(id):
 
 @app.route("/products/<int:id>", methods=["PUT"])
 def update_price_info(id):
+    """Get info from PUT request, parse, confirm and update data in collection"""
 
     info = request.get_json()
     new_price = info['current_price.value']
@@ -83,11 +85,14 @@ def update_price_info(id):
 
 @app.errorhandler(HTTPException)
 def handle_exception(err):
+    """JSONify standard error messages"""
 
     return jsonify({"status_code": err.code, "message": err.description})
 
 
 def get_price(id):
+    """Helper function for getting product information from the collection"""
+
     price = product_price.find_one({'_id': id})
 
     if price is not None:
