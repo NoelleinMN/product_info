@@ -1,6 +1,7 @@
 import unittest
 # from unittest.mock import patch
 from server import app
+import server
 # # from mongomock import MongoClient
 #
 # from mongoengine import connect, disconnect
@@ -76,14 +77,14 @@ class FlaskTestsBasic(unittest.TestCase):
         result = self.client.get('/products/13860428', follow_redirects=True)
         self.assertIn(b"current_price", result.data)
 
-    def test_error_response_no_product(self):
-        """Test app error handling with integer"""
-        result = self.client.get('/products/00000000', follow_redirects=True)
-        self.assertIn(b"message", result.data)
-
     def test_error_response_bad_input(self):
         """Test app error handling with gibberish"""
         result = self.client.get('/products/?g@rb@ge?!', follow_redirects=True)
+        self.assertIn(b"message", result.data)
+
+    def test_error_response_no_product(self):
+        """Test app error handling with integer"""
+        result = self.client.get('/products/00000000', follow_redirects=True)
         self.assertIn(b"message", result.data)
 
 
@@ -141,41 +142,32 @@ class FlaskTestsBasic(unittest.TestCase):
 #             self.assertEqual(response_json, expected_json)
 
 
+class MockAPITests(unittest.TestCase):
+    """Flask tests that mock API call."""
 
-# class MockAPITests(unittest.TestCase):
-#     """Flask tests that use the database and mock API call."""
-#
-#     def setUp(self):
-#         """Before every test."""
-#         self.client = app.test_client()
-#         app.config['TESTING'] = True
-#
-#         connect_to_db(app, "mongo:///test_products", echo=False)
-#
-#         # Create tables and seed data
-#         db.create_all()
-#         example_data()
-#
-#         def _mock_get_product_api(product_id):
-#             """Mock test of API call"""
-#
-#             return {"data":{"product":{"tcin":"84836363","item":{"product_description":{"title":"Round Velvet Decorative Throw Pillow - Threshold™","downstream_description":"The Round Velvet Decorative Throw Pillow from Threshold™ is the perfect addition to your furniture whether you want to relax in your room or enjoy the outdoor ambiance on your patio. The throw pillow has a round shape, and is fashioned in a solid velvet fabric with densely fringed trim in a matching hue that adds luxurious style to any space inside or outside your home. Boasting a 100% cotton construction that feels plush to the touch, this decorative throw pillow also features a soft fill for comfortable sitting and lounging. Place it on your loveseat, lounge chair, sofa or porch swing for a stunning look.<br /><br />Threshold™: Quality & Design / Casual classics for house and home."},"enrichment":{"images":{"primary_image_url":"https://target.scene7.com/is/image/Target/GUEST_0e0a5653-ac33-400a-bc23-8dc193bda221"}},"product_classification":{"product_type_name":"HOME","merchandise_type_name":"Decorative accent pillows"},"primary_brand":{"name":"Threshold"}}}}, 'status': 'OK'}
-#
-#         server.get_item_price = _mock_get_product_api
-#
-#     def tearDown(self):
-#         """Do at end of every test."""
-#
-#         db.session.remove()
-#         db.drop_all()
-#         db.engine.dispose()
-#
-#     @unittest.expectedFailure   #autoincrement issue with related table, but does show connection to DB with API results
-#     def test_get_prodcuct_api_with_mock(self):
-#         """Mock API call with data."""
-#
-#         result = self.client.post('/product<id>')
-#         self.assertEqual(result.status_code, 200)
+    def setUp(self):
+        super(MockAPITests, self).setUp()
+        self.client = mongomock.MongoClient()
+
+    def test_get_price_from_api(self):
+        test_db = self.client.test_database
+        test_collection = test_db.test_database
+        test_items = test_collection.insert_one({"item_id":84836363, "current_price" : {"value" : 20.77, "currency_code" : "USD"}})
+        item = test_collection.find_one({'item_id': 84836363})
+
+        def _mock_get_product_api():
+            """Mock test of API call"""
+
+            result = {"data":{"product":{"tcin":"84836363","item":{"product_description":{"title":"Round Velvet Decorative Throw Pillow - Threshold™","downstream_description":"The Round Velvet Decorative Throw Pillow from Threshold™ is the perfect addition to your furniture whether you want to relax in your room or enjoy the outdoor ambiance on your patio. The throw pillow has a round shape, and is fashioned in a solid velvet fabric with densely fringed trim in a matching hue that adds luxurious style to any space inside or outside your home. Boasting a 100% cotton construction that feels plush to the touch, this decorative throw pillow also features a soft fill for comfortable sitting and lounging. Place it on your loveseat, lounge chair, sofa or porch swing for a stunning look.<br /><br />Threshold™: Quality & Design / Casual classics for house and home."},"enrichment":{"images":{"primary_image_url":"https://target.scene7.com/is/image/Target/GUEST_0e0a5653-ac33-400a-bc23-8dc193bda221"}},"product_classification":{"product_type_name":"HOME","merchandise_type_name":"Decorative accent pillows"},"primary_brand":{"name":"Threshold"}}}}, 'status': 'OK'}
+
+            return result
+
+        data = _mock_get_product_api()
+        id = data['data']['product']['tcin']
+
+        price = test_collection.find_one({'_id': id})
+        self.assertEqual(item['current_price']['value'], 20.77)
+
 
 if __name__ == "__main__":
     import unittest
