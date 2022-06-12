@@ -3,6 +3,7 @@
 """Server for myRetail RESTful API"""
 
 from flask import (Flask, jsonify, abort, make_response, render_template, request, redirect)
+from werkzeug.exceptions import HTTPException
 from pymongo import MongoClient
 import json
 # from bson.json_util import dumps
@@ -70,6 +71,9 @@ def get_redsky_info(id):
 
         return product
 
+@app.errorhandler(HTTPException)
+def handle_exception(err):
+    return jsonify({"message": err.description}), err.code
 
 if __name__ == '__main__':
     app.run(debug=True)
