@@ -1,5 +1,5 @@
 # Challenge
-Build a RESTful products API, which will aggregate product data from multiple sources and return it as JSON to the caller. 
+Build a RESTful products API, which will aggregate product data from multiple sources and return it as JSON to the caller.
 
 # Tech Stack
 - Python
@@ -18,7 +18,7 @@ Users can:
   - error handling if endpoint is invalid
   - success message if valid enpoint, and price is updated
 
-# How to use the app (COMING SOON!)
+# How to use the API
 
 Please follow these steps to run this API on your local device.
 
@@ -35,14 +35,12 @@ Initial setup:
 9. You can now navigate to 'localhost:5000/' to access the API!
 
 
-Running tests:
+# How to test the API
 
 The test suite can be run from the command line with `python3 test.py`
 
 Manual cURL checks are structured as follows:
 `curl -H "Content-Type: application/json" -X GET http://localhost:5000/products/13860428` (could add the -i flag for additional information/output)
 
-PUT method cURL is structured as follows:
+cURL for PUT method (to update price in the data store and API) is structured as follows:
 `curl -X PUT --header 'Content-Type: application/json' -d '{"current_price.value": 9.99}' http://localhost:5000/products/13860428`
-
-
