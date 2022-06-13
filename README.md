@@ -24,7 +24,7 @@ Please follow these steps to run this API on your local device.
 
 Initial setup:
 
-1. Install [Python 3.10](https://www.python.org/downloads/), [MongoDB 5.0](https://www.mongodb.com/docs/manual/installation/), [pip](https://pip.pypa.io/en/stable/installation/) and [Virtualenv](https://pypi.org/project/virtualenv/) in your project directory (or use global installations and paths, if you prefer) using the package manager of your choice. [Homebrew](https://brew.sh/) is highly recommended for macOS or Linux users.
+1. Install [Python 3.10](https://www.python.org/downloads/), [MongoDB 5.0](https://www.mongodb.com/docs/manual/installation/), [pip](https://pip.pypa.io/en/stable/installation/), and [Virtualenv](https://pypi.org/project/virtualenv/) in your project directory (or use global installations and paths, if you prefer) using the package manager of your choice. [Homebrew](https://brew.sh/) is highly recommended for macOS or Linux users.
 2. Clone repository: `git clone https://github.com/NoelleinMN/product_info.git`
 3. Create a virtual environment: `virtualenv env`
 4. Activate the Virtualenv via the command line: `source env/bin/activate` (Note that you need only type `deactivate` to exit the virtualenv when you are done with your session)
@@ -42,5 +42,36 @@ The test suite can be run from the command line with `python3 test.py`
 Manual cURL checks are structured as follows:
 `curl -H "Content-Type: application/json" -X GET http://localhost:5000/products/13860428` (could add the -i flag for additional information/output)
 
+Output for GET
+```
+{
+  "id": 13860428,
+  "name": "The Big Lebowski (Blu-ray)",
+  "current_price": {
+    "value": 7.99,
+    "currency_code": "USD"
+  }
+}
+```
+
 cURL for PUT method (to update price in the data store and API) is structured as follows:
 `curl -X PUT --header 'Content-Type: application/json' -d '{"current_price.value": 9.99}' http://localhost:5000/products/13860428`
+
+Output for PUT
+```
+{
+  "message": "Price information for 13860428 has been updated to 9.99"
+}
+```
+
+A second GET request at the same endpoint would yield:
+```
+{
+  "id": 13860428,
+  "name": "The Big Lebowski (Blu-ray)",
+  "current_price": {
+    "value": 9.99,
+    "currency_code": "USD"
+  }
+}
+```
