@@ -1,7 +1,10 @@
 import unittest
-from server import app
-import server
+import sys
+import os
+sys.path.insert(0, os.getcwd()+"/SubDirectory")
+# import app.main.server
 import mongomock
+import server
 
 
 class FlaskTestsBasic(unittest.TestCase):
