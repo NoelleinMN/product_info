@@ -6,6 +6,7 @@ from flask import (Flask, jsonify, abort, make_response, request)
 from werkzeug.exceptions import HTTPException
 from pymongo import MongoClient
 import requests
+from flask_httpauth import HTTPBasicAuth
 import json
 import os
 
@@ -14,12 +15,16 @@ app = Flask(__name__)
 
 app.config["JSON_SORT_KEYS"] = False
 app.config['JSON_AS_ASCII'] = False
+auth = HTTPBasicAuth()
 
 client = MongoClient('localhost', 27017)
 db = client.products
 product_price = db.product_price
 
 API_KEY = os.environ['REDSKY_KEY']
+LOGIN_ID = os.environ['LOGIN']
+PUT_PWD = os.environ['LOGIN_PWD']
+
 
 
 @app.route("/")
@@ -61,6 +66,7 @@ def get_redsky_info(id):
         return product
 
 @app.route("/products/<int:id>", methods=["PUT"])
+@auth.login_required
 def update_price_info(id):
     """Get info from PUT request, parse, confirm and update data in collection"""
 
@@ -102,6 +108,17 @@ def get_price(id):
         json = jsonify(message=("Price information for {} is not available".format(id)))
         response = make_response(json, 400)
         abort(response)
+
+@auth.get_password
+def get_password(username):
+    if username == LOGIN_ID:
+        return PUT_PWD
+    return None
+
+@auth.error_handler
+def unauthorized():
+    return make_response(jsonify({'error': 'Unauthorized access'}), 403)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
