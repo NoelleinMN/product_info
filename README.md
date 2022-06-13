@@ -16,7 +16,7 @@ Users can:
 - Update price by product ID within the data store (HTTP PUT request at /products/{id} )
   - send price update to the specific id endpoint
   - error handling if endpoint is invalid
-  - success message if valid enpoint, and price is updated
+  - success message if valid endpoint, and price is updated
 
 # How to use the API
 
@@ -29,7 +29,7 @@ Initial setup:
 3. Create a virtual environment: `virtualenv env`
 4. Activate the Virtualenv via the command line: `source env/bin/activate` (Note that you need only type `deactivate` to exit the virtualenv when you are done with your session)
 5. Install dependencies: `pip install -r requirements.txt`
-6. Save the provided API key for the challenge to your local environemnt with `export API_KEY=<put_key_here>`
+6. Save the provided API key for the challenge to your local environment with `export API_KEY=<put_key_here>`
 7. Source your keys from the os by adding these two lines to your code: `import os` and `API_KEY = os.environ['API_KEY']`
 8. Run the app from the command line: `python3 server.py`
 9. You can now navigate to 'localhost:5000/' to access the API!
